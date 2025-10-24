@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package chitchat;
+
+option go_package = "../ma3test";
+
+service ChitChatService {
+  // Client subscribes to a stream of Broadcast messages.
+  rpc Subscribe(SubscribeRequest) returns (stream Broadcast) {}
+
+  // Client publishes a chat message (unary).
+  rpc Publish(PublishRequest) returns (PublishResponse) {}
+
+  // Client indicates it is leaving (unary). Closing the Subscribe stream
+  // is also treated as leaving by the server.
+  rpc Leave(LeaveRequest) returns (LeaveResponse) {}
+}
+
+message SubscribeRequest {
+  string client_id = 1;
+}
+
+message PublishRequest {
+  string client_id = 1;
+  string content = 2;
+}
+
+message PublishResponse {
+  bool ok = 1;
+  string error = 2; // optional error message
+}
+
+message LeaveRequest {
+  string client_id = 1;
+}
+
+message LeaveResponse {
+  bool ok = 1;
+  string error = 2;
+}
+
+// Broadcast message sent from server to all clients
+message Broadcast {
+  enum Type {
+    CHAT = 0;
+    JOIN = 1;
+    LEAVE = 2;
+  }
+  Type type = 1;
+  string client_id = 2;    // author or participant for join/leave
+  string content = 3;      // actual text (for CHAT) or "Participant X joined..." for JOIN/LEAVE
+  int64 logical_time = 4;  // Lamport logical time
+}
