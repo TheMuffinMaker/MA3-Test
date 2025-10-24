@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package chitchat;
 
-option go_package = "../ma3test";
+option go_package = "github.com/TheMuffinMaker/MA3-Test/grpc/chitchatpb";
 
 service ChitChatService {
   // Client subscribes to a stream of Broadcast messages.
